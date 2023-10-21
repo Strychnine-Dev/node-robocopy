@@ -1,8 +1,8 @@
-var expect = require('chai').expect,
-    cases = require('cases'),
-    parse = require('../src/parser');
+const expect = require('chai').expect;
+const cases = require('cases');
+const parse = require('../src/parser');
 
-var stdoutA = "-------------------------------------------------------------------------------\r\n\
+const stdoutA = "-------------------------------------------------------------------------------\r\n\
    ROBOCOPY     ::     Robust File Copy for Windows\r\n\
 \r\n\
 -------------------------------------------------------------------------------\r\n\
@@ -28,7 +28,7 @@ var stdoutA = "-----------------------------------------------------------------
 X:\\Temp\\gulptest\\scripts3\\\r\n\
 The system cannot find the file specified.";
 
-var stdoutB = "-------------------------------------------------------------------------------\r\n\
+const stdoutB = "-------------------------------------------------------------------------------\r\n\
    ROBOCOPY     ::     Robust File Copy for Windows\r\n\
 \r\n\
 -------------------------------------------------------------------------------\r\n\
@@ -56,27 +56,21 @@ ERROR : No Destination Directory Specified.\r\n\
 \r\n\
 ****  /MIR can DELETE files as well as copy them !";
 
-var errorA = "ERROR 2 (0x00000002) Accessing Source Directory\r\n\
+const errorA = "ERROR 2 (0x00000002) Accessing Source Directory\r\n\
 X:\\Temp\\gulptest\\scripts3\\\r\n\
 The system cannot find the file specified.";
 
-var errorB = "ERROR : No Destination Directory Specified.";
+const errorB = "ERROR : No Destination Directory Specified.";
 
-describe('parser', function() {
+describe('parser', () => {
+  it('should return empty value when no errors found', () => {
+    expect(parse('')).to.equal(null);
+  });
 
-    it('should return empty value when no errors found', function () {
-
-        expect(parse('')).to.equal(null);
-
-    });
-
-    it('should parse errors', cases([
-          [ stdoutA, errorA ],
-          [ stdoutB, errorB ]
-      ], function (stdout, error) {
-
-        expect(parse(stdout)).to.equal(error);
-
-    }));
-
+  it('should parse errors', cases([
+    [stdoutA, errorA],
+    [stdoutB, errorB],
+  ], (stdout, error) => {
+    expect(parse(stdout)).to.equal(error);
+  }));
 });

@@ -1,15 +1,15 @@
 {
-  "name": "robocopy",
-  "version": "0.1.16",
-  "description": "Wrapper for Robocopy.",
-  "homepage": "https://github.com/mikeobrien/node-robocopy",
+  "name": "@strychnine/robocopy",
+  "version": "2.0.0",
+  "description": "Wrapper for Robocopy",
+  "homepage": "https://github.com/strychnine-dev/node-robocopy",
   "main": "src/robocopy.js",
   "bugs": {
-    "url": "https://github.com/mikeobrien/node-robocopy/issues"
+    "url": "https://github.com/strychnine-dev/node-robocopy/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikeobrien/node-robocopy.git"
+    "url": "https://github.com/strychnine-dev/node-robocopy.git"
   },
   "keywords": [
     "robocopy",
@@ -18,7 +18,7 @@
   "scripts": {
     "test": "gulp"
   },
-  "author": "Mike O'Brien",
+  "author": "Mike O'Brien, Mason Buchanan",
   "license": "MIT",
   "readmeFilename": "README.md",
   "files": [
@@ -30,14 +30,14 @@
     "cases": "^0.1.1",
     "chai": "^1.10.0",
     "expect.js": "~0.3.1",
-    "gulp": "~3.8.10",
+    "gulp": "^4.0.2",
     "gulp-filter": "~1.0.2",
     "gulp-jshint": "~1.9.0",
     "gulp-mocha": "~1.1.1"
   },
   "dependencies": {
     "lodash": "^2.4.1",
-    "q": "^1.1.1",
+    "rxjs": "^7.8.1",
     "underscore.string": "^2.4.0"
   }
 }

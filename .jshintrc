@@ -81,7 +81,10 @@
     "worker"        : false,    // Web Workers
     "wsh"           : false,    // Windows Scripting Host
     "yui"           : false,    // Yahoo User Interface
+    "esversion"     : 8,        // Use ES8
 
     // Custom Globals
-    "globals"       : {}        // additional predefined global variables
+    "globals"       : {         // additional predefined global variables
+      "mocha": true
+    }
 }

@@ -1,8 +1,11 @@
 # robocopy
 
-[![npm version](http://img.shields.io/npm/v/robocopy.svg?style=flat)](https://npmjs.org/package/robocopy) [![build status](http://img.shields.io/travis/mikeobrien/node-robocopy.svg?style=flat)](https://travis-ci.org/mikeobrien/node-robocopy) [![Dependency Status](http://img.shields.io/david/mikeobrien/node-robocopy.svg?style=flat)](https://david-dm.org/mikeobrien/node-robocopy) [![npm downloads](http://img.shields.io/npm/dm/robocopy.svg?style=flat)](https://npmjs.org/package/robocopy)
+[![npm version](http://img.shields.io/npm/v/robocopy.svg?style=flat)](https://npmjs.org/package/robocopy) [![npm downloads](http://img.shields.io/npm/dm/robocopy.svg?style=flat)](https://npmjs.org/package/robocopy)
 
 Node wrapper for [Robocopy](http://technet.microsoft.com/en-us/library/cc733145.aspx).
+
+## Acknowledgement
+It's an updated lib based on the original [Robocopy](https://npmjs.org/package/robocopy) from [Mike O'Brien](https://github.com/mikeobrien)
 
 ## Install
 
@@ -20,26 +23,58 @@ var robocopy = require('robocopy');
 robocopy({ ... });
 ```
 
-Robocopy returns a [promise](https://github.com/kriskowal/q). Success returns `stdout`:
+Robocopy returns an [Observable](https://rxjs.dev/guide/observable).
 
 ```js
+const robocopy = require('robocopy');
+const { catchError, finalize } = require('rxjs/operators');
+
 robocopy({ ... })
-    .done(function(stdout) {
-        console.log(stdout);
-    });
+  .pipe(
+    catchError((err) => console.error(err)),
+    finalize(() => console.log('done!')),
+  )
+  .subscribe((status) => {
+    // summary provides robocopy details (summary, files, speed, etc.)
+    console.log(status.summary);
+
+    // progress provides percentage complete of transfer
+    console.log(status.progress);
+  });
 ```
 
-Failure returns the error:
+Detailed example using `cli-progress`
 
 ```js
-robocopy({ ... })
-    .fail(function(error) {
-        console.log(error.message);
-    });
+const robocopy = require('robocopy');
+const progress = require('cli-progress');
+const { catchError, finalize } = require('rxjs/operators');
+
+let summary;
+
+const bar = new progress.Bar();
+bar.start(100);
+
+robocopy({
+  source: 'C:\\Source',
+  destination: 'C:\\Dest',
+  files: [
+    '*.*',
+  ],
+}).pipe(
+  catchError(() => bar.stop()),
+  finalize(() => {
+    bar.stop();
+    console.log(summary);
+  }),
+).subscribe(status => {
+  summary = status.summary;
+  bar.update(status.progress);
+});
 ```
 
-The options below mirror those of the robocopy command itself, so check 
-out the [robocopy documentation](http://technet.microsoft.com/en-us/library/cc733145.aspx) 
+The options below mirror those of the robocopy command itself, so check
+out the [robocopy documentation](http://technet.microsoft.com/en-us/library/cc733145.aspx)
 for more details.
 
 ```js
@@ -51,7 +86,7 @@ robocopy({
     // Specifies the destination path(s).
     destination: 'dest/path' | [ 'dest/path1', 'dest/path2', ... ],
 
-    // Indicates if multiple destinations should be copied serialy. By default 
+    // Indicates if multiple destinations should be copied serialy. By default
     // multiple destinations are copied in parallel.
     serial: true|false,
 
@@ -199,7 +234,7 @@ robocopy({
         // [/xd <Directory>[ ...]]
         excludeDirs: ['tmp', 'obj'],
 
-        // Leaves excluded directories as relative paths. 
+        // Leaves excluded directories as relative paths.
         // Converts to absolute paths by default.
         excludeDirsRelative: true|false,
 
