@@ -10,7 +10,7 @@ It's an updated lib based on the original [Robocopy](https://npmjs.org/package/r
 ## Install
 
 ```bash
-$ npm install robocopy --save
+$ npm install @strychnine-labs/robocopy --save
 ```
 
 ## Usage
@@ -18,7 +18,7 @@ $ npm install robocopy --save
  The first parameter is the options:
 
 ```js
-var robocopy = require('robocopy');
+var robocopy = require('@strychnine-labs/robocopy');
 
 robocopy({ ... });
 ```
@@ -26,7 +26,7 @@ robocopy({ ... });
 Robocopy returns an [Observable](https://rxjs.dev/guide/observable).
 
 ```js
-const robocopy = require('robocopy');
+const robocopy = require('@strychnine-labs/robocopy');
 const { catchError, finalize } = require('rxjs/operators');
 
 robocopy({ ... })
@@ -40,13 +40,23 @@ robocopy({ ... })
 
     // progress provides percentage complete of transfer
     console.log(status.progress);
+
+    // currentDir provides the working directory
+    console.log(status.currentDir);
+
+    // currentFile provides the file actively being copied
+    console.log(status.currentFile);
+
+    // fileList contains an array of all files being copied
+    // NOTE: this array is built during the copy
+    console.log(status.fileList)
   });
 ```
 
 Detailed example using `cli-progress`
 
 ```js
-const robocopy = require('robocopy');
+const robocopy = require('@strychnine-labs/robocopy');
 const progress = require('cli-progress');
 const { catchError, finalize } = require('rxjs/operators');
 
@@ -61,6 +71,9 @@ robocopy({
   files: [
     '*.*',
   ],
+  copy: {
+    subdirs: true,
+  },
 }).pipe(
   catchError(() => bar.stop()),
   finalize(() => {
@@ -69,7 +82,7 @@ robocopy({
   }),
 ).subscribe(status => {
   summary = status.summary;
-  bar.update(status.progress);
+  bar.update(status.progress, { filename: status.currentFile });
 });
 ```
 

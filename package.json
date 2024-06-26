@@ -1,6 +1,6 @@
 {
   "name": "@strychnine-labs/robocopy",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Wrapper for Robocopy",
   "homepage": "https://github.com/strychnine-dev/node-robocopy",
   "main": "src/robocopy.js",

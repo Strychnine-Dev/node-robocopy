@@ -312,8 +312,11 @@ export interface RobocopyOptions {
 }
 
 export interface RobocopyResponse {
-  progress?: number;
-  summary?: string;
+  progress: number;
+  summary: string;
+  currentDir: string;
+  currentFile: string;
+  fileList: string[];
 }
 
 export function Robocopy(options: RobocopyOptions): Observable<RobocopyResponse>;

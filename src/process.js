@@ -2,16 +2,20 @@ const process = require('child_process');
 const parser = require('./parser');
 const readline = require('readline');
 const { BehaviorSubject, map } = require('rxjs');
+const { join } = require('path');
 
-module.exports = function(command) {
+module.exports = function(command, options) {
   let summary = '';
   let progress = 0;
+  let currentDir = Array.isArray(options.destination) ? options.destination[0] : options.destination;
+  let currentFile = '';
+  let fileList = [];
 
   const subject = new BehaviorSubject('');
   const observable = subject.asObservable().pipe(
     map(msg => msg.toString('utf8')),
     map(msg => {
-      if (msg.match(/\d+(?:\.\d+)?%$/)) {
+      if (msg.match(/\d+(?:\.\d+)?%/)) {
         // message contains progress status
         progress = parseFloat(msg);
       } else {
@@ -19,7 +23,16 @@ module.exports = function(command) {
         summary += `${msg}\r\n`;
       }
 
-      return { summary, progress };
+      if (msg.match(/New Dir.*/)) {
+        // robocopy has moved to a new subdirectory
+        currentDir = msg.split('\t').at(-1);
+      } else if (msg.match(/New File.*/)) {
+        // robocopy has moved to a new subdirectory
+        currentFile = msg.split('\t').at(-1);
+        fileList.push(join(currentDir, currentFile));
+      }
+
+      return { summary, progress, currentDir, currentFile, fileList };
     }),
   );
 
